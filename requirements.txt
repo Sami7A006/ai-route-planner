@@ -1,0 +1,6 @@
+# Core planner needs NO third-party packages (pure Python 3.9+).
+# Frontend backend (server.py):
+flask
+# Only for the optional Streamlit UI (app.py):
+streamlit
+pandas

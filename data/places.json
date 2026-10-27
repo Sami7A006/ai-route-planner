@@ -1,0 +1,26 @@
+{
+  "city": "Hyderabad",
+  "note": "Coordinates, timings and prices are approximate. Edit freely or replace with your own city.",
+  "places": [
+    {"id":"charminar","name":"Charminar","category":"heritage","lat":17.3616,"lon":78.4747,"duration":60,"cost":25,"open":"09:30","close":"17:30","rating":4.6,"tags":["iconic","outdoor","walking_heavy"]},
+    {"id":"mecca_masjid","name":"Mecca Masjid","category":"religious","lat":17.3604,"lon":78.4736,"duration":40,"cost":0,"open":"05:00","close":"20:30","rating":4.4,"tags":["iconic"]},
+    {"id":"laad_bazaar","name":"Laad Bazaar","category":"shopping","lat":17.3607,"lon":78.4734,"duration":60,"cost":0,"open":"10:00","close":"21:00","rating":4.0,"tags":["walking_heavy","evening"]},
+    {"id":"chowmahalla","name":"Chowmahalla Palace","category":"heritage","lat":17.3578,"lon":78.4717,"duration":90,"cost":80,"open":"10:00","close":"17:00","rating":4.5,"tags":["iconic","romantic"]},
+    {"id":"salar_jung","name":"Salar Jung Museum","category":"museum","lat":17.3713,"lon":78.4804,"duration":120,"cost":20,"open":"10:00","close":"17:00","rating":4.5,"tags":["indoor","kid_friendly"]},
+    {"id":"golconda","name":"Golconda Fort","category":"heritage","lat":17.3833,"lon":78.4011,"duration":150,"cost":25,"open":"09:00","close":"17:00","rating":4.6,"tags":["iconic","outdoor","walking_heavy"]},
+    {"id":"qutub_shahi","name":"Qutub Shahi Tombs","category":"heritage","lat":17.3948,"lon":78.3943,"duration":60,"cost":20,"open":"09:30","close":"16:30","rating":4.2,"tags":["outdoor","romantic"]},
+    {"id":"hussain_sagar","name":"Hussain Sagar & Buddha Statue","category":"nature","lat":17.4239,"lon":78.4738,"duration":75,"cost":50,"open":"09:00","close":"21:00","rating":4.3,"tags":["outdoor","evening","romantic","kid_friendly"]},
+    {"id":"birla_mandir","name":"Birla Mandir","category":"religious","lat":17.4062,"lon":78.4691,"duration":45,"cost":0,"open":"07:00","close":"21:00","rating":4.5,"tags":["iconic","evening"]},
+    {"id":"birla_science","name":"Birla Science Museum & Planetarium","category":"museum","lat":17.4120,"lon":78.4680,"duration":90,"cost":100,"open":"10:30","close":"20:00","rating":4.0,"tags":["indoor","kid_friendly"]},
+    {"id":"lumbini_park","name":"Lumbini Park","category":"nature","lat":17.4106,"lon":78.4736,"duration":60,"cost":20,"open":"15:00","close":"21:00","rating":4.0,"tags":["outdoor","evening","kid_friendly"]},
+    {"id":"zoo","name":"Nehru Zoological Park","category":"nature","lat":17.3507,"lon":78.4515,"duration":180,"cost":100,"open":"08:30","close":"17:00","rating":4.2,"tags":["outdoor","kid_friendly","walking_heavy"]},
+    {"id":"durgam_cheruvu","name":"Durgam Cheruvu Cable Bridge","category":"nature","lat":17.4310,"lon":78.3910,"duration":45,"cost":0,"open":"06:00","close":"23:00","rating":4.4,"tags":["outdoor","evening","romantic"]},
+    {"id":"shilparamam","name":"Shilparamam Arts Village","category":"culture","lat":17.4513,"lon":78.3810,"duration":90,"cost":50,"open":"10:30","close":"20:00","rating":4.1,"tags":["outdoor","kid_friendly"]},
+    {"id":"taramati","name":"Taramati Baradari","category":"culture","lat":17.3817,"lon":78.3764,"duration":75,"cost":100,"open":"10:00","close":"18:00","rating":4.0,"tags":["romantic"]},
+    {"id":"inorbit","name":"Inorbit Mall","category":"shopping","lat":17.4344,"lon":78.3870,"duration":120,"cost":0,"open":"10:00","close":"22:00","rating":4.2,"tags":["indoor","evening","kid_friendly"]},
+    {"id":"paradise","name":"Paradise Biryani (Secunderabad)","category":"food","lat":17.4416,"lon":78.4871,"duration":60,"cost":600,"open":"11:00","close":"23:00","rating":4.4,"tags":["indoor"]},
+    {"id":"shadab","name":"Hotel Shadab (Old City)","category":"food","lat":17.3600,"lon":78.4740,"duration":60,"cost":400,"open":"11:00","close":"23:30","rating":4.3,"tags":["indoor"]},
+    {"id":"ramoji","name":"Ramoji Film City","category":"entertainment","lat":17.2543,"lon":78.6808,"duration":360,"cost":1800,"open":"09:00","close":"17:30","rating":4.4,"tags":["outdoor","kid_friendly","walking_heavy"]},
+    {"id":"wonderla","name":"Wonderla Amusement Park","category":"entertainment","lat":17.2587,"lon":78.6317,"duration":330,"cost":1500,"open":"11:00","close":"18:00","rating":4.3,"tags":["outdoor","kid_friendly"]}
+  ]
+}

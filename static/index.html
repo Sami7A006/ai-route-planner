@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RouteAI — Tourist Route Planner</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<style>
+:root{--bg:#f5f6fa;--card:#fff;--text:#14182b;--muted:#6b7190;--line:#e4e7f1;--accent:#5b5bf0;--accent2:#8b5cf6;--soft:#eef0ff;--ok:#10b981}
+@media (prefers-color-scheme:dark){:root{--bg:#0d1020;--card:#161a30;--text:#eef0fb;--muted:#9aa0c4;--line:#262b4a;--accent:#7c7cff;--accent2:#a78bfa;--soft:#1f2445}}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--text)}
+header{padding:28px 32px 8px}h1{margin:0;font-size:26px;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.layout{display:grid;grid-template-columns:360px 1fr;gap:20px;padding:16px 32px 40px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr;padding:12px 16px 32px}header{padding:20px 16px 4px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px}
+label:first-child{margin-top:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--text);padding:7px 13px;border-radius:999px;font-size:13px;cursor:pointer;text-transform:capitalize;transition:.15s}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);font:inherit;font-size:14px}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{flex:1;border:0;background:none;color:var(--muted);padding:7px;border-radius:8px;cursor:pointer;font:inherit;font-size:13px;text-transform:capitalize}
+.seg button.on{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.toggles{display:flex;gap:16px;font-size:14px;margin-top:4px}.toggles label{all:unset;display:flex;gap:6px;align-items:center;cursor:pointer}
+.toggles input{width:auto}
+.go{width:100%;margin-top:22px;padding:13px;border:0;border-radius:12px;font:inherit;font-weight:600;color:#fff;cursor:pointer;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:.15s}
+.go:hover{filter:brightness(1.08)}.go:disabled{opacity:.6;cursor:wait}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat{background:var(--soft);border-radius:12px;padding:12px 14px}.stat b{display:block;font-size:20px}.stat small{color:var(--muted)}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font:inherit;font-size:14px}
+.tab.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+#map{height:340px;border-radius:14px;margin-bottom:18px;border:1px solid var(--line);z-index:0}
+.tl{position:relative;padding-left:18px}.tl:before{content:"";position:absolute;left:15px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.travel{margin:2px 0 2px 30px;font-size:12px;color:var(--muted)}
+.stop{display:flex;gap:14px;position:relative;margin:6px 0}
+.num{flex:none;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;font-size:14px;display:grid;place-items:center;margin-left:-18px;border:3px solid var(--card);z-index:1}
+.sc{flex:1;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sc h3{margin:0;font-size:15px;display:flex;justify-content:space-between;gap:8px}.sc h3 span{color:var(--muted);font-weight:500;font-size:13px;white-space:nowrap}
+.meta{font-size:12px;color:var(--muted);margin:3px 0 8px;text-transform:capitalize}
+.tag{display:inline-block;background:var(--soft);color:var(--accent);font-size:11.5px;padding:3px 9px;border-radius:999px;margin:0 6px 4px 0}
+.empty{text-align:center;color:var(--muted);padding:60px 20px}
+.num-pin{background:var(--accent);color:#fff;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;font-weight:700;font-size:12px;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+</style>
+</head>
+<body>
+<header>
+  <h1><span>RouteAI</span> Tourist Route Planner</h1>
+  <p>A* search · rule-based expert system · simulated annealing — no machine learning</p>
+</header>
+<div class="layout">
+  <aside class="card">
+    <label>Interests</label><div class="chips" id="interests"></div>
+    <label>Group</label>
+    <div class="seg" id="group"><button data-v="solo" class="on">solo</button><button data-v="couple">couple</button><button data-v="family">family</button><button data-v="friends">friends</button></div>
+    <div class="toggles" style="margin-top:12px"><label><input type="checkbox" id="kids"> Kids</label><label><input type="checkbox" id="senior"> Seniors</label></div>
+    <label>Per-place budget</label>
+    <div class="seg" id="level"><button data-v="low">low</button><button data-v="medium" class="on">medium</button><button data-v="high">high</button></div>
+    <div class="row"><div><label>Days</label><input type="number" id="days" value="1" min="1" max="5"></div>
+    <div><label>Total budget ₹</label><input type="number" id="budget" value="3000" step="500"></div></div>
+    <div class="row"><div><label>Day start</label><input type="time" id="dayStart" value="09:00"></div>
+    <div><label>Day end</label><input type="time" id="dayEnd" value="20:00"></div></div>
+    <label>Transport</label>
+    <select id="mode"><option value="cab">Cab</option><option value="auto">Auto</option><option value="bike">Bike</option><option value="walk">Walk</option></select>
+    <button class="go" id="go">Plan my trip</button>
+  </aside>
+  <main>
+    <div class="card" id="out"><div class="empty">Pick your interests and press <b>Plan my trip</b>.</div></div>
+  </main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const state = { interests: new Set(["heritage", "food"]), data: null, day: 0 };
+let map, layer;
+
+function seg(id, cb) {
+  $(id).addEventListener("click", e => {
+    if (e.target.tagName !== "BUTTON") return;
+    $(id).querySelectorAll("button").forEach(b => b.classList.remove("on"));
+    e.target.classList.add("on"); cb && cb(e.target.dataset.v);
+  });
+}
+const val = id => $(id).querySelector(".on").dataset.v;
+seg("#group"); seg("#level");
+
+fetch("/api/places").then(r => r.json()).then(ps => {
+  [...new Set(ps.map(p => p.category))].sort().forEach(c => {
+    const b = document.createElement("button");
+    b.className = "chip" + (state.interests.has(c) ? " on" : ""); b.textContent = c;
+    b.onclick = () => { state.interests.has(c) ? state.interests.delete(c) : state.interests.add(c); b.classList.toggle("on"); };
+    $("#interests").appendChild(b);
+  });
+});
+
+$("#go").onclick = async () => {
+  const btn = $("#go"); btn.disabled = true; btn.textContent = "Planning…";
+  try {
+    const res = await fetch("/api/plan", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        interests: [...state.interests], group: val("#group"), budgetLevel: val("#level"),
+        kids: $("#kids").checked, senior: $("#senior").checked, days: +$("#days").value,
+        budget: +$("#budget").value, dayStart: $("#dayStart").value, dayEnd: $("#dayEnd").value,
+        mode: $("#mode").value })});
+    if (!res.ok) throw new Error(await res.text());
+    state.data = await res.json(); state.day = 0; render();
+  } catch (e) {
+    $("#out").innerHTML = `<div class="empty">Could not plan: ${e.message}</div>`;
+  } finally { btn.disabled = false; btn.textContent = "Plan my trip"; }
+};
+
+function el(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function render() {
+  const { days, start } = state.data, d = days[state.day], out = $("#out");
+  out.innerHTML = "";
+  const total = days.reduce((a, x) => a + x.cost, 0);
+  const stats = el("div", "stats", `<div class="stat"><b>₹${total}</b><small>trip total</small></div>
+    <div class="stat"><b>${d.stops.length}</b><small>stops today</small></div>
+    <div class="stat"><b>${d.km} km</b><small>travel today</small></div>`);
+  out.append(stats);
+  const tabs = el("div", "tabs");
+  days.forEach((_, i) => { const t = el("button", "tab" + (i === state.day ? " on" : ""), `Day ${i + 1}`); t.onclick = () => { state.day = i; render(); }; tabs.append(t); });
+  out.append(tabs);
+  const mapBox = el("div", "", "");
+  mapBox.id = "map";
+  out.append(mapBox);
+  if (!d.stops.length) { out.append(el("div", "empty", "Nothing feasible — try a bigger budget or a longer day.")); return; }
+
+  const tl = el("div", "tl"); let prev = "Start";
+  d.stops.forEach((s, i) => {
+    tl.append(el("div", "travel", `🚗 ${s.travelKm} km · ${s.travelMin} min from ${esc(prev)}${s.wait ? ` · waits ${s.wait} min for opening` : ""}`));
+    const row = el("div", "stop");
+    row.append(el("div", "num", i + 1));
+    const c = el("div", "sc", `<h3>${esc(s.name)}<span>${s.start} – ${s.end}</span></h3>
+      <div class="meta">${esc(s.category)} · ${s.cost ? "₹" + s.cost : "free"}</div>
+      ${s.reasons.map(r => `<span class="tag">${esc(r)}</span>`).join("")}`);
+    row.append(c); tl.append(row); prev = s.name;
+  });
+  tl.append(el("div", "travel", `🏨 Back at start around <b>${d.backHome}</b> · day cost ₹${d.cost}`));
+  out.append(tl);
+  drawMap(start, d.stops);
+}
+
+function drawMap(start, stops) {
+  if (map) map.remove();
+  map = L.map("map", { scrollWheelZoom: false });
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(map);
+  const pts = [[start.lat, start.lon], ...stops.map(s => [s.lat, s.lon]), [start.lat, start.lon]];
+  L.polyline(pts, { color: "#5b5bf0", weight: 4, opacity: .8, dashArray: "8 8" }).addTo(map);
+  L.marker([start.lat, start.lon], { icon: L.divIcon({ className: "", html: '<div class="num-pin" style="background:#10b981">🏨</div>', iconSize: [26, 26] }) }).addTo(map);
+  stops.forEach((s, i) => L.marker([s.lat, s.lon], { icon: L.divIcon({ className: "", html: `<div class="num-pin">${i + 1}</div>`, iconSize: [26, 26] }) })
+    .bindPopup(`<b>${esc(s.name)}</b><br>${s.start}–${s.end}`).addTo(map));
+  map.fitBounds(pts, { padding: [30, 30] });
+}
+</script>
+</body>
+</html>
